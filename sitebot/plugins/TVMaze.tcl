@@ -113,6 +113,7 @@ namespace eval ::ngBot::plugin::TVMaze {
 	set ${np}::zeroconvert(%tvmaze_show_next_airdate)         "N/A"
 	set ${np}::zeroconvert(%tvmaze_show_url)                  "N/A"
 	set ${np}::zeroconvert(%tvmaze_show_type)                 "N/A"
+	set ${np}::zeroconvert(%tvmaze_show_lang)                 "N/A"
 	set ${np}::zeroconvert(%tvmaze_show_premiered)            "N/A"
 	set ${np}::zeroconvert(%tvmaze_show_started)              "N/A"
 	set ${np}::zeroconvert(%tvmaze_show_ended)                "N/A"
@@ -171,7 +172,7 @@ namespace eval ::ngBot::plugin::TVMaze {
 			}
 		}
 
-		set variables(TVMAZE-MSGFULL) "%tvmaze_show_name %tvmaze_show_id %tvmaze_show_genres %tvmaze_show_country %tvmaze_show_network %tvmaze_show_status %tvmaze_show_latest_title %tvmaze_show_latest_episode %tvmaze_show_latest_airdate %tvmaze_show_next_title %tvmaze_show_next_episode %tvmaze_show_next_airdate %tvmaze_show_url %tvmaze_show_type %tvmaze_show_premiered %tvmaze_show_started %tvmaze_show_ended %tvmaze_show_airtime %tvmaze_show_runtime %tvmaze_show_rating %tvmaze_episode_url %tvmaze_episode_season_episode %tvmaze_episode_season %tvmaze_episode_number %tvmaze_episode_original_airdate %tvmaze_episode_title"
+		set variables(TVMAZE-MSGFULL) "%tvmaze_show_name %tvmaze_show_id %tvmaze_show_genres %tvmaze_show_country %tvmaze_show_network %tvmaze_show_status %tvmaze_show_latest_title %tvmaze_show_latest_episode %tvmaze_show_latest_airdate %tvmaze_show_next_title %tvmaze_show_next_episode %tvmaze_show_next_airdate %tvmaze_show_url %tvmaze_show_type %tvmaze_show_premiered %tvmaze_show_started %tvmaze_show_ended %tvmaze_show_airtime %tvmaze_show_runtime %tvmaze_show_rating %tvmaze_episode_url %tvmaze_episode_season_episode %tvmaze_episode_season %tvmaze_episode_number %tvmaze_episode_original_airdate %tvmaze_episode_title %tvmaze_show_lang"
 		set variables(TVMAZE) "$variables(NEWDIR) $variables(TVMAZE-MSGFULL)"
 		set variables(TVMAZE-PRE) "$variables(PRE) $variables(TVMAZE-MSGFULL)"
 		set variables(TVMAZE-MSGSHOW) $variables(TVMAZE-MSGFULL)
@@ -354,7 +355,7 @@ namespace eval ::ngBot::plugin::TVMaze {
 						show_url show_type show_premiered \
 						show_started show_ended show_airtime show_runtime show_rating \
 						episode_url episode_season_episode episode_season episode_number \
-						episode_original_airdate episode_title]
+						episode_original_airdate episode_title show_lang]
 
 		set show_str $string
 		if {(![regexp -- {^(.*?)(\d+x\d+|[sS]\d+[eE]\d+).*$} $string -> show_str episode_str]) && ([string is true -strict $strict])} {
@@ -400,6 +401,7 @@ namespace eval ::ngBot::plugin::TVMaze {
 		regexp {\"name\":\"(.*?)\"} $data -> info(show_name)
 		regexp {\"url\":\"(.*?)\"} $data -> info(show_url)
 		set info(show_url) [regsub "http" $info(show_url) "https"]
+		regexp {\"language\":\"(.*?)\"} $data -> info(show_lang)
 		regexp {\"status\":\"(.*?)\"} $data -> info(show_status)
 		regexp {\"country\":.*?\"code\":\"(.*?)\"} $data -> info(show_country)
 		regexp {\"premiered\":\"(.*?)\"} $data -> info(show_premiered)
@@ -500,6 +502,7 @@ namespace eval ::ngBot::plugin::TVMaze {
 			regexp {\"name\":\"(.*?)\"} $data -> info(episode_title)
 			regexp {\"url\":\"(.*?)\"} $data -> info(episode_url)
 			set info(episode_url) [regsub "http" $info(episode_url) "https"]
+                        regexp {\"language\":\"(.*?)\"} $data -> info(show_lang)
 			regexp {\"airdate\":\"(.*?)\"} $data -> info(episode_original_airdate)
 
 			regexp {\"season\":(\d+)} $data -> info(episode_season)
